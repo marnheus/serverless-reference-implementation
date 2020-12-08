@@ -46,8 +46,8 @@ stages:
     - script: |
         cd $(Build.SourcesDirectory)
         echo $(docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.0.1-linux-netcoreapp2.1 /repo) > .gitversion
-        echo "v1.0" > src/ClientApp/public/version.txt
-        echo "v1.0.1123" > src/ClientApp/public/semver.txt
+        echo $(cat .gitversion | grep -oP '(?<="MajorMinorPatch":")[^"]*') > src/ClientApp/public/version.txt
+        echo $(cat .gitversion | grep -oP '(?<="FullSemVer":")[^"]*' | sed -e "s/\+/-/g") > src/ClientApp/public/semver.txt
       displayName: 'bump version'
 
     - task: PublishBuildArtifacts@1
